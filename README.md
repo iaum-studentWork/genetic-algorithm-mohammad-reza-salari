@@ -19,3 +19,53 @@
 ### Fitness (شایستگی)
 برای محاسبه fitness در این کد، fitness به صورت معکوس طول مسیر محاسبه می‌شود. این روش یکی از رایج‌ترین روش‌ها در مسئله TSP است که در آن هرچه طول مسیر کوتاه‌تر باشد، شایستگی بیشتر است. این روش برای الگوریتم‌های ژنتیک در مسائل بهینه‌سازی مسیر بسیار مؤثر است.
 
+
+
+# سوال دو
+
+## معرفی
+روشی به نام "Partially Mapped Crossover (PMX)" به این صورت عمل می‌کند:
+1.انتخاب دو نقطه‌ی تصادفی در والدین.
+2.بخش بین این دو نقطه در والدین به عنوان تکه‌های مبادله در نظر گرفته می‌شود.
+3.جایگذاری این تکه‌ها در فرزند.
+4.تکمیل بقیه ژن‌ها با استفاده از نگاشت‌های جزئی بین والدین.
+
+## مراحل دقیق‌تر
+1.انتخاب دو نقطه‌ی تصادفی.
+2.نگاشت تکه‌های بین این دو نقطه.
+3.جایگذاری تکه‌ها در فرزند.
+4.تکمیل بقیه ژن‌ها با استفاده از نگاشت‌ها.
+def pmx_crossover(parent1, parent2):
+    start, end = sorted(np.random.choice(len(parent1), 2, replace=False))
+    child = [None] * len(parent1)
+
+    # Copy the segment from parent1 to the child
+    child[start:end+1] = parent1[start:end+1]
+
+    # Mapping elements between parents
+    mapping = {}
+    for i in range(start, end+1):
+        mapping[parent2[i]] = parent1[i]
+
+    # Fill the rest of the child
+    for i in range(len(child)):
+        if child[i] is None:
+            current_gene = parent2[i]
+            while current_gene in mapping:
+                current_gene = mapping[current_gene]
+            child[i] = current_gene
+
+    return np.array(child)
+
+# Example usage:
+parent1 = np.array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+parent2 = np.array([9, 8, 7, 6, 5, 4, 3, 2, 1, 0])
+
+child = pmx_crossover(parent1, parent2)
+print("Parent 1:", parent1)
+print("Parent 2:", parent2)
+print("Child:", child)
+
+در این کد، دو والد انتخاب می‌شوند و بخش‌های بین دو نقطه تصادفی در والدین نگاشت می‌شوند تا فرزند تولید شود. این روش می‌تواند تنوع بیشتری به جمعیت بدهد و به بهبود نتایج کمک کند.
+
+
